@@ -1,0 +1,389 @@
+apply plugin:'java'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+version = '2.6'
+
+project.ext.baseName = 'tightvnc-jviewer'
+
+defaultTasks 'clean', 'dist'
+
+configurations {
+	viewerSwingCompile { extendsFrom compile }
+	viewerSwingRuntime { extendsFrom viewerSwingCompile, runtime }
+}
+
+sourceSets {
+	viewerSwing {
+		java {
+			srcDir 'src/viewer_swing/java'
+		}
+		resources {
+			srcDir 'src/viewer_swing/resources'
+		}
+	}
+	main {
+		java.srcDirs += viewerSwing.java.srcDirs
+		resources.srcDirs += viewerSwing.resources.srcDirs
+	}
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    viewerSwingCompile group: 'com.jcraft', name: 'jsch', version: '0.1.+'
+    viewerSwingRuntime configurations.viewerSwingCompile
+    compile group: 'com.jcraft', name: 'jsch', version: '0.1.+'
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+jar {
+    baseName = project.baseName
+    version = null
+    manifest {
+        attributes 'Main-Class': 'com.glavsoft.viewer.Viewer'
+        attributes 'Implementation-Version': "${project.version}"
+    }
+
+    // make fat jar with Jsch classes added (using task noJsch prevents adding these a classes)
+    gradle.taskGraph.whenReady { graph ->
+        if ( ! graph.hasTask(noJsch)) {
+            def runtimeDeps = configurations.viewerSwingRuntime.collect {
+                it.isDirectory() ? it : zipTree(it)
+            }
+            from(runtimeDeps) {
+                exclude 'META-INF/**'
+            }
+        }
+    }
+}
+
+task noJsch
+
+artifacts {
+    archives file('src/web/viewer-applet-example.html')
+}
+
+uploadArchives {
+    repositories {
+        ivy {
+            artifactPattern "$projectDir/dist/${project.baseName}-${project.version}/[artifact].[ext]"
+        }
+    }
+	uploadDescriptor = false
+}
+
+task dist(dependsOn: uploadArchives)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
